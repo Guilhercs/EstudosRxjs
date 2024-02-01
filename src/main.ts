@@ -1,4 +1,12 @@
-import { Observable, catchError, filter, map, of } from "rxjs";
+import {
+  Observable,
+  catchError,
+  combineLatest,
+  filter,
+  interval,
+  map,
+  of,
+} from "rxjs";
 
 export interface UserInterface {
   id: string;
@@ -27,7 +35,7 @@ getActiveUsers(users$).subscribe((activeUsers) => {
 const normalizeUsers = (
   users$: Observable<UserInterface[]>
 ): Observable<string[]> => {
-  throw Error("error");
+  //throw Error("error");
   return users$.pipe(
     map((users) => users.map((user) => user.name)),
     catchError((err) => {
@@ -41,4 +49,21 @@ normalizeUsers(users$).subscribe({
   next: (res) => {
     console.log(res);
   },
+
+  error: (err) => {
+    console.log("err", err);
+  },
 });
+
+//combineLatest operator
+export class CombineLatest {
+  constructor() {
+    const foo$ = of("foo"); //interval(3000);
+    const baz$ = of("baz");
+    const bar$ = of("bar");
+    combineLatest([foo$, bar$, baz$]).subscribe((res) => console.log(res));
+  }
+}
+
+const combineClass = new CombineLatest();
+combineClass;
