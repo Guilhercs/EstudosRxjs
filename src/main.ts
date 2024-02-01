@@ -1,9 +1,10 @@
 import {
+  BehaviorSubject,
   Observable,
+  Subject,
   catchError,
   combineLatest,
   filter,
-  interval,
   map,
   of,
 } from "rxjs";
@@ -67,3 +68,18 @@ export class CombineLatest {
 
 const combineClass = new CombineLatest();
 combineClass;
+
+//how subject and BehaviorSubject work in Rxjs
+
+const usersBH$ = new BehaviorSubject<UserInterface[]>([]);
+
+const subject$ = new Subject();
+
+subject$.subscribe((res) => console.log("subject", res));
+
+setTimeout(() => {
+  usersBH$.next([{ id: "1", name: "Banana", age: 12, isActivate: true }]);
+  subject$.next(1);
+}, 2000);
+
+usersBH$.subscribe((res) => console.log("res", res, usersBH$.getValue()));
