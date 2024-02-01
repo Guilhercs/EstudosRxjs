@@ -1,4 +1,4 @@
-import { Observable, filter, of } from "rxjs";
+import { Observable, catchError, filter, map, of } from "rxjs";
 
 export interface UserInterface {
   id: string;
@@ -7,6 +7,7 @@ export interface UserInterface {
   isActivate: boolean;
 }
 
+//filter com every
 function getActiveUsers(
   users$: Observable<UserInterface[]>
 ): Observable<UserInterface[]> {
@@ -19,4 +20,25 @@ const users$: Observable<UserInterface[]> = of([
 
 getActiveUsers(users$).subscribe((activeUsers) => {
   console.log(activeUsers);
+});
+
+//implement error Handling
+
+const normalizeUsers = (
+  users$: Observable<UserInterface[]>
+): Observable<string[]> => {
+  throw Error("error");
+  return users$.pipe(
+    map((users) => users.map((user) => user.name)),
+    catchError((err) => {
+      console.log("err", err);
+      return of([]);
+    })
+  );
+};
+
+normalizeUsers(users$).subscribe({
+  next: (res) => {
+    console.log(res);
+  },
 });
