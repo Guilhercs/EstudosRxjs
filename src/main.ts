@@ -83,3 +83,13 @@ setTimeout(() => {
 }, 2000);
 
 usersBH$.subscribe((res) => console.log("res", res, usersBH$.getValue()));
+
+//observables vs promises
+
+const foo$ = of("1");
+
+
+foo$.subscribe((value) => console.log(value));
+
+foo$.toPromise().then((value) => console.log(value)); //don't use, thx
+
