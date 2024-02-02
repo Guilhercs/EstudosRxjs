@@ -4,9 +4,15 @@ import {
   Subject,
   catchError,
   combineLatest,
+  concatMap,
+  delay,
+  exhaustMap,
   filter,
+  from,
   map,
+  mergeMap,
   of,
+  switchMap,
 } from "rxjs";
 
 export interface UserInterface {
@@ -88,8 +94,45 @@ usersBH$.subscribe((res) => console.log("res", res, usersBH$.getValue()));
 
 const foo$ = of("1");
 
-
 foo$.subscribe((value) => console.log(value));
 
 foo$.toPromise().then((value) => console.log(value)); //don't use, thx
 
+//cold vs hot observables
+
+const coldObservableTest = Math.random();
+
+const observable = new Observable((observer) => {
+  observer.next(coldObservableTest);
+});
+
+observable.subscribe((data) => console.log(data));
+observable.subscribe((data) => console.log(data));
+
+//what is map, concatMap, mergeMap, switchMap and exhaustMap
+
+//map
+// from([0, 1, 2, 3, 4])
+//   .pipe(map((el) => el * 10))
+//   .subscribe(console.log);
+
+const example = (operator: any) => () => {
+  from([0, 1, 2, 3, 4])
+    .pipe(operator((x: any) => of(x).pipe(delay(500))))
+    .subscribe({
+      next: console.log,
+      error: (e) => console.error(e),
+      complete: () => console.log(`${operator.name} completed`),
+    });
+};
+//concatMap
+example(concatMap)();
+
+//MergeMap
+//example(mergeMap)();
+
+//switchMap
+//example(switchMap)();
+
+//exhaustMap
+//example(exhaustMap)();
